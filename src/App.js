@@ -1,24 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { lazy } from 'react';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { CircularProgress } from '@material-ui/core';
+
+export const NotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage'));
+export const MoviesListPage = lazy(() => import('./pages/MoviesList/MoviesListPage'));
+export const MoviePage = lazy(() => import('./pages/Movie/MoviePage'));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="content">
+      <React.Suspense fallback={<CircularProgress />}>
+        <Router>
+          <Switch>
+            <Route path="/movies" component={MoviesListPage} />
+            <Route path="/movie/:id" render={() => <MoviePage />} />
+            <Route path="/not-found" component={NotFoundPage} />
+
+            <Route exact path="/" render={() => <Redirect to="/movies" />} />
+            <Route render={() => <Redirect to="/not-found" />} />
+          </Switch>
+        </Router>
+      </React.Suspense>
     </div>
   );
 }

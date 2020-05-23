@@ -1,0 +1,9 @@
+.header-sort select {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.header-input {
+  width: 100%;
+  text-align: right;
+}
