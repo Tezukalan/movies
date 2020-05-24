@@ -2,11 +2,11 @@ import React, { lazy } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 
-const NotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage'));
-const MoviesListPage = lazy(() => import('./pages/MoviesList/MoviesListPage'));
-const MoviePage = lazy(() => import('./pages/Movie/MoviePage'));
-
 function App() {
+  const NotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage'));
+  const MoviesListPage = lazy(() => import('./pages/MoviesList/MoviesListPage'));
+  const MoviePage = lazy(() => import('./pages/Movie/MoviePage'));
+
   return (
     <div className="content">
       <React.Suspense fallback={<CircularProgress />}>
