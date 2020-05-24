@@ -21,6 +21,7 @@
   height: auto;
   font-weight: bold;
   min-height: 285px;
+  cursor: pointer;
 }
 
 .grid-img {
@@ -44,5 +45,5 @@
 
 .MuiGridListTileBar-rootSubtitle.grid-tile-bar {
   height: 100px;
-  background: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.7);
 }

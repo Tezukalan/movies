@@ -2,9 +2,9 @@ import React, { lazy } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 
-export const NotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage'));
-export const MoviesListPage = lazy(() => import('./pages/MoviesList/MoviesListPage'));
-export const MoviePage = lazy(() => import('./pages/Movie/MoviePage'));
+const NotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage'));
+const MoviesListPage = lazy(() => import('./pages/MoviesList/MoviesListPage'));
+const MoviePage = lazy(() => import('./pages/Movie/MoviePage'));
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         <Router>
           <Switch>
             <Route path="/movies" component={MoviesListPage} />
-            <Route path="/movie/:id" render={() => <MoviePage />} />
+            <Route exact path="/movie/:id" component={MoviePage} />
             <Route path="/not-found" component={NotFoundPage} />
 
             <Route exact path="/" render={() => <Redirect to="/movies" />} />

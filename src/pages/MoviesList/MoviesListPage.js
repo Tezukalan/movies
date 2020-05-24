@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState, useReducer } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { MOVIES_LIST_URL, API_KEY } from '../../App.constants';
@@ -6,90 +6,98 @@ import axios from '../../utils/axios';
 import MoviesList from '../../components/MoviesList/MoviesList';
 import ListHeader from '../../components/ListHeader/ListHeader';
 
-class MoviesListPage extends React.Component {
-  constructor() {
-    super();
+const MoviesListPage = () => {
+  let totalPages = 1;
 
-    this.state = {
-      movies: [],
-      nextPage: 1,
-      loading: false,
-      totalPages: 1,
-      sortCriterion: 'popularity.desc'
-    };
-  }
+  const sortRef = useRef('popularity.desc');
+  const [sort, setSortState] = useState(sortRef.current);
+  const setSort = (value) => {
+    sortRef.current = value;
+    setSortState(sortRef.current);
+  };
 
-  componentDidMount() {
-    const { nextPage, sortCriterion } = this.state;
-    this.getMovies(nextPage, sortCriterion);
+  const loadingRef = useRef(false);
+  const [loading, setLoadingState] = useState(loadingRef.current);
+  const setLoading = (value) => {
+    loadingRef.current = value;
+    setLoadingState(loadingRef.current);
+  };
 
-    window.addEventListener('scroll', this.handleScroll.bind(this));
-  }
+  const nextPageRef = useRef(1);
+  const [nextPage, setNextPageState] = useState(nextPageRef.current);
+  const setNextPage = (value) => {
+    nextPageRef.current = value;
+    setNextPageState(nextPageRef.current);
+  };
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll.bind(this));
-  }
+  const updateMovies = (prevMovies, action = { type: 'reset', newMovies: null }) => {
+    if (action.type === 'concat') {
+      return prevMovies.concat(action.newMovies);
+    }
+    return [];
+  };
+  const [movies, dispatchMovies] = useReducer(updateMovies, []);
 
-  getMovies(pageNumber, sortCriterion) {
-    const url = `${MOVIES_LIST_URL}?api_key=${API_KEY}&page=${pageNumber}&sort_by=${sortCriterion}`;
+  const getMovies = () => {
+    const url = `${MOVIES_LIST_URL}?api_key=${API_KEY}&page=${nextPageRef.current}&sort_by=${sortRef.current}`;
 
-    this.setState({ loading: true });
+    setLoading(true);
 
     axios
       .get(url)
       .then((res) => {
-        const { movies } = this.state;
-
-        this.setState({
-          movies: movies.concat(res.data.results),
-          nextPage: pageNumber + 1,
-          loading: false,
-          totalPages: res.total_pages
-        });
+        setNextPage(nextPageRef.current + 1);
+        totalPages = res.data.total_pages;
+        dispatchMovies({ type: 'concat', newMovies: res.data.results });
+        setLoading(false);
       })
       .catch(() => {
-        this.setState({
-          movies: [],
-          nextPage: 1,
-          loading: false,
-          totalPages: 1
-        });
+        setNextPage(1);
+        totalPages = 1;
+        dispatchMovies();
+        setLoading(false);
       });
-  }
-
-  handleChange = (value) => {
-    this.setState({
-      movies: [],
-      nextPage: 1,
-      sortCriterion: value
-    });
-    this.getMovies(1, value);
   };
 
-  handleScroll() {
-    const { nextPage, loading, totalPages, sortCriterion } = this.state;
+  const handleScroll = () => {
     const bottomDistance = document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight;
     const thresdhold = window.innerHeight * 2;
 
-    if (bottomDistance > thresdhold || loading || nextPage > totalPages) return;
+    if (bottomDistance > thresdhold || loadingRef.current || nextPage > totalPages) return;
 
-    this.getMovies(nextPage, sortCriterion);
-  }
+    getMovies();
+  };
 
-  render() {
-    const { movies, loading, sortCriterion } = this.state;
-    return (
-      <>
-        <ListHeader sortCriterion={sortCriterion} onSelectChange={this.handleChange} />
-        <MoviesList movies={movies} />
-        {loading && (
-          <div className="loading">
-            <CircularProgress />
-          </div>
-        )}
-      </>
-    );
-  }
-}
+  const initMovies = () => {
+    getMovies();
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  };
+
+  useEffect(initMovies, []);
+
+  const handleChange = (value) => {
+    setNextPage(1);
+    setSort(value);
+    dispatchMovies();
+    getMovies();
+  };
+
+  return (
+    <>
+      <ListHeader sortCriterion={sort} onSelectChange={handleChange} />
+      <MoviesList movies={movies} />
+      {loading && (
+        <div className="loading">
+          <CircularProgress />
+        </div>
+      )}
+    </>
+  );
+};
 
 export default MoviesListPage;

@@ -5,21 +5,26 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Rating from '@material-ui/lab/Rating';
+import { useHistory } from 'react-router-dom';
 
 import { IMAGE_BASE_URL, POSTER_SIZE, DEFAULT_IMAGE_BASE_URL } from '../../App.constants';
 import './MoviesList.css';
 
 const MoviesList = (props) => {
   const { movies } = props;
+  const history = useHistory();
+  const handleClick = (id) => {
+    history.push(`/movie/${id}`);
+  };
 
   return (
     <div className="grid">
       <GridList cellHeight="auto" spacing={10} cols={4} className="grid-list">
         {movies.map((movie) => {
-          const imgSrc = movie.poster_path ? `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}` : `${DEFAULT_IMAGE_BASE_URL}${POSTER_SIZE}/defaultPoster.png`;
+          const imgSrc = movie.poster_path ? `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}` : `${DEFAULT_IMAGE_BASE_URL}${POSTER_SIZE}/defaultPoster.jpg`;
 
           return (
-            <GridListTile key={movie.id} classes={{ tile: 'grid-tile', imgFullHeight: 'grid-img' }}>
+            <GridListTile key={movie.id} classes={{ tile: 'grid-tile', imgFullHeight: 'grid-img' }} onClick={() => handleClick(movie.id)}>
               <img src={imgSrc} alt={movie.title} />
               <GridListTileBar
                 className="grid-tile-bar"
@@ -27,7 +32,7 @@ const MoviesList = (props) => {
                 title={movie.title}
                 subtitle={
                   <>
-                    <Rating defaultValue={movie.vote_average / 2} precision={0.1} emptyIcon={<StarBorderIcon fontSize="inherit" />} readOnly />
+                    <Rating value={movie.vote_average / 2} precision={0.1} emptyIcon={<StarBorderIcon fontSize="inherit" />} readOnly />
                     <span className="grid-vote-count">{movie.vote_count} Votes</span>
                   </>
                 }
