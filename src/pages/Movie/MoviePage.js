@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { withRouter } from 'react-router'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -40,7 +39,9 @@ const MoviePage = () => {
 
     axios.get(url).then((res) => {
       const movie = res.data;
-      const imgSrc = movie.backdrop_path ? `${IMAGE_BASE_URL}${BACKDROP_SIZE}${movie.backdrop_path}` : `${DEFAULT_IMAGE_BASE_URL}${BACKDROP_SIZE}/defaultBackdrop.jpg`;
+      const imgSrc = movie.backdrop_path
+        ? `${IMAGE_BASE_URL}${BACKDROP_SIZE}${movie.backdrop_path}`
+        : `${DEFAULT_IMAGE_BASE_URL}${BACKDROP_SIZE}/defaultBackdrop.jpg`;
       setState({
         movie,
         imgSrc
@@ -68,13 +69,15 @@ const MoviePage = () => {
   };
 
   const displayImage = (item, pathProp) => {
-    if (!item) return;
+    if (!item) return ``;
     if (item[pathProp]) {
       const imgSrc = `${IMAGE_BASE_URL}${DETAIL_POSTER_SIZE}${item[pathProp]}`;
       return <img key={item.id} src={imgSrc} alt={item.name} title={item.name} />;
     }
     return <span key={item.name}>{item.name}</span>;
   };
+
+  const votesTemplate = `${state.movie.vote_average} by ${state.movie.vote_count} people`;
 
   return (
     <div className="movie">
@@ -123,9 +126,7 @@ const MoviePage = () => {
               </TableRow>
               <TableRow>
                 <TableCell className="movie-row-title">Vote</TableCell>
-                <TableCell>
-                  {state.movie.vote_average} by {state.movie.vote_count} people
-                </TableCell>
+                <TableCell>{votesTemplate}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="movie-row-title">Spoken languages</TableCell>
@@ -138,7 +139,9 @@ const MoviePage = () => {
 
               <TableRow>
                 <TableCell className="movie-row-title">Production companies</TableCell>
-                <TableCell className="movie-cell-companies">{state.movie.production_companies.map((item) => displayImage(item, 'logo_path'))}</TableCell>
+                <TableCell className="movie-cell-companies">
+                  {state.movie.production_companies.map((item) => displayImage(item, 'logo_path'))}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -148,4 +151,4 @@ const MoviePage = () => {
   );
 };
 
-export default withRouter(MoviePage);
+export default MoviePage;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import MoviesList from './MoviesList';
-import { mockMovies } from '../../mocks';
+import { mockMovies } from '../../__mocks__/mocks';
 
 afterEach(cleanup);
 
