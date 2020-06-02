@@ -15,7 +15,9 @@ jest.mock('react-router-dom', () => ({
 describe('MoviePage', () => {
   let moviePageContainer;
 
-  beforeEach(() => {});
+  beforeEach(() => {
+    window.scrollTo = jest.fn();
+  });
 
   it('displays 11 rows by default', () => {
     const setValue = jest.fn();

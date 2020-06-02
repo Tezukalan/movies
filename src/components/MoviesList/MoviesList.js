@@ -18,7 +18,7 @@ const MoviesList = (props) => {
   };
 
   return (
-    <div className="grid">
+    <div id="list" className="grid">
       <GridList cellHeight="auto" spacing={10} cols={4} className="grid-list">
         {movies.map((movie) => {
           const imgSrc = movie.poster_path

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,12 +7,14 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 import { MOVIE_URL, API_KEY, IMAGE_BASE_URL, BACKDROP_SIZE, DEFAULT_IMAGE_BASE_URL, DETAIL_POSTER_SIZE } from '../../App.constants';
 import axios from '../../utils/axios';
 import './MoviePage.css';
 
 const MoviePage = () => {
+  const history = useHistory();
   const { id } = useParams();
   const [state, setState] = useState({
     movie: {
@@ -47,22 +49,22 @@ const MoviePage = () => {
         imgSrc
       });
     });
-
-    const resizeHeader = () => {
-      const headerEl = document.getElementById('movie-header');
-
-      if (document.documentElement.scrollTop > 20) {
-        headerEl.classList.add('smaller');
-      } else {
-        headerEl.classList.remove('smaller');
-      }
-    };
-    window.addEventListener('scroll', resizeHeader);
-
-    return () => {
-      window.removeEventListener('scroll', resizeHeader);
-    };
   }, [id]);
+
+  const handleScroll = () => {
+    const headerEl = document.getElementById('movieHeader');
+    const { scrollTop } = document.getElementById('movie');
+
+    if (scrollTop > 20) {
+      headerEl.classList.add('smaller');
+    } else {
+      headerEl.classList.remove('smaller');
+    }
+  };
+
+  const goToMovies = () => {
+    history.push('/movies');
+  };
 
   const displayNames = (array) => {
     return array && array.length > 0 ? array.map((item) => item.name).join(', ') : '';
@@ -80,9 +82,10 @@ const MoviePage = () => {
   const votesTemplate = `${state.movie.vote_average} by ${state.movie.vote_count} people`;
 
   return (
-    <div className="movie">
-      <header id="movie-header" className="movie-header" style={{ backgroundImage: `url(${state.imgSrc})` }}>
+    <div id="movie" className="movie" onScroll={handleScroll}>
+      <header id="movieHeader" className="movie-header" style={{ backgroundImage: `url(${state.imgSrc})` }}>
         <div className="movie-header-titles">
+          <ArrowBackIosIcon className="movie-header-back" onClick={goToMovies} />
           <div className="movie-header-title">{state.movie.title}</div>
           <div className="movie-header-subtitle">{state.movie.tagline}</div>
         </div>
