@@ -1,1 +1,0 @@
-{"version":3,"sources":["NotFoundPage.css"],"names":[],"mappings":"AAAA,mBACE,YACF,CAEA,gBACE,eAAgB,CAChB,aACF","file":"8.9191e555.chunk.css","sourcesContent":[".not-found-content {\n  padding: 20px;\n}\n\n.go-back-button {\n  margin-top: 20px;\n  display: block;\n}"]}

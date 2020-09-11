@@ -1,0 +1,2 @@
+(this.webpackJsonpmovies=this.webpackJsonpmovies||[]).push([[8],{107:function(t,n,o){},165:function(t,n,o){"use strict";o.r(n);var e=o(0),a=o.n(e),s=o(2),i=o(176);o(107);n.default=function(){var t=Object(s.g)();return a.a.createElement("div",{className:"not-found-content"},"Oops, page not found !",a.a.createElement(i.a,{className:"go-back-button",variant:"outlined",color:"primary",onClick:function(){t.push("/movies")}},"Go to movies list"))}}}]);
+//# sourceMappingURL=8.24dd27ca.chunk.js.map
